@@ -97,6 +97,7 @@ GEMINI.md
 .claude/
 
 # OpenAI Codex
+.codex
 .codex/
 
 # Google Gemini
