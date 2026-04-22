@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LIBEXEC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib/lumina/libexec" && pwd)"
+readonly LIBEXEC_DIR
+# shellcheck source=/dev/null
+source "$(dirname "${BASH_SOURCE[0]}")/../lib/lumina/lib/utils.sh"
+
+show_help() {
+    show_lumina_header
+    printf "\nUso: lumina <comando> [args]\n\nComandos disponíveis:\n"
+    for file in "$LIBEXEC_DIR"/*.sh; do
+        if [[ -f "$file" ]]; then
+            local cmd
+            cmd=$(basename "$file" .sh)
+            local desc
+            desc=$(grep -m1 '^# DESC:' "$file" | cut -d: -f2-)
+            printf "  %-12s %s\n" "$cmd" "${desc:-Sem descrição}"
+        fi
+    done
+}
+
+if [[ $# -eq 0 ]]; then
+    show_help
+    exit 0
+fi
+
+cmd="$1"; shift
+
+case "$cmd" in
+    -h|--help) show_help; exit 0 ;;
+esac
+
+if [[ -f "$LIBEXEC_DIR/$cmd.sh" ]]; then
+    bash "$LIBEXEC_DIR/$cmd.sh" "$@"
+else
+    warn "Comando desconhecido: $cmd"
+    show_help
+    exit 1
+fi

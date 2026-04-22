@@ -1,0 +1,59 @@
+#compdef lumina
+# Zsh completion for lumina CLI
+
+_lumina() {
+    local state
+
+    _arguments \
+        '(-h --help)'{-h,--help}'[Exibe ajuda]' \
+        '(-v --version)'{-v,--version}'[Exibe a versão]' \
+        '1: :->command' \
+        '*: :->args'
+
+    case $state in
+        command)
+            local commands=(
+                'stack:Gerencia o ambiente Docker LuminaStack'
+                'db:Gerencia backups e banco de dados MariaDB'
+                'git:Gerencia identidade Git e repositórios'
+            )
+            _describe 'comando' commands
+            ;;
+        args)
+            case ${words[2]} in
+                stack)
+                    local stack_cmds=(
+                        'start:Inicia o ambiente Docker'
+                        'stop:Para o ambiente Docker'
+                        'logs:Visualiza logs (submenu por PHP)'
+                        'status:Exibe status e uso de recursos'
+                        'fix-permissions:Corrige permissões do workspace'
+                        'show-db-info:Exibe informações do banco'
+                    )
+                    _describe 'stack subcomando' stack_cmds
+                    ;;
+                db)
+                    local db_cmds=(
+                        'backup:Realiza backup completo dos bancos'
+                        'restore:Restaura backup a partir de lista'
+                        'remove:Remove bancos de dados individualmente'
+                        'optimize-tables:Verifica e otimiza tabelas'
+                        'optimize-mariadb:Ajusta buffer pool para Moodle'
+                    )
+                    _describe 'db subcomando' db_cmds
+                    ;;
+                git)
+                    local git_cmds=(
+                        'init:Inicia novo repositório Git'
+                        'clone:Clona repositório e aplica configurações'
+                        'configure-global:Configura identidade global'
+                        'apply-local:Aplica identidade no repositório atual'
+                    )
+                    _describe 'git subcomando' git_cmds
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_lumina "$@"
