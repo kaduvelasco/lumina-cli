@@ -27,9 +27,7 @@ trap 'printf "\n%b❌ Operação interrompida pelo usuário.%b\n" "$C1" "$NC"; e
 # ==============================================================================
 
 show_header() {
-    printf '\n%b=====================================%b\n' "$H1" "$NC"
-    printf '%b    LUMINA DB :: GESTÃO DE DADOS%b\n' "$H1" "$NC"
-    printf '%b=====================================%b\n' "$H1" "$NC"
+    show_lumina_header "LUMINA DB — GESTÃO DE DADOS"
 }
 
 show_menu() {
@@ -44,7 +42,7 @@ show_menu() {
 }
 
 show_help() {
-    show_lumina_header
+    show_lumina_header "LUMINA DB — GESTÃO DE DADOS"
     cat << EOF
 
 lumina db — Gerenciador de banco de dados MariaDB

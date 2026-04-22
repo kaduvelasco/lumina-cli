@@ -24,9 +24,7 @@ trap 'printf "\n"; warn "Operação interrompida."; exit 1' SIGINT SIGTERM
 # ==============================================================================
 
 show_header() {
-    printf '\n%b=====================================%b\n' "$H1" "$NC"
-    printf '%b      LUMINA STACK MANAGER%b\n' "$H1" "$NC"
-    printf '%b=====================================%b\n' "$H1" "$NC"
+    show_lumina_header "LUMINA STACK MANAGER"
 }
 
 show_menu() {
@@ -42,7 +40,7 @@ show_menu() {
 }
 
 show_help() {
-    show_lumina_header
+    show_lumina_header "LUMINA STACK MANAGER"
     cat << EOF
 
 lumina stack — Gerenciador do ambiente Docker LuminaStack
@@ -233,7 +231,7 @@ logs_menu() {
     fi
 
     while true; do
-        printf '\n%b===== 📜 Visualizador de Logs =====%b\n' "$C4" "$NC"
+        show_lumina_header "LUMINA STACK — Visualizador de Logs"
 
         local index=1
         declare -A map=()

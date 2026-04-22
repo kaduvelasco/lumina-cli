@@ -31,14 +31,11 @@ readonly -a _LIBSECRET_PATHS=(
 # ==============================================================================
 
 show_header() {
-    printf '\n%b=====================================%b\n' "$H1" "$NC"
-    printf '%b    LUMINA-GIT — Git Manager%b\n' "$H1" "$NC"
-    printf '%b=====================================%b\n' "$H1" "$NC"
+    show_lumina_header "LUMINA GIT — Git Manager"
     printf '   %b📁 Pasta : %b%s%b\n' "$C4" "$C3" "$(pwd)" "$NC"
     local global_user
     global_user=$(git config --global user.name 2>/dev/null || echo "não definido")
-    printf '   %b👤 Usuário: %b%s%b\n' "$C4" "$C3" "$global_user" "$NC"
-    printf '%b=====================================%b\n' "$H2" "$NC"
+    printf '   %b👤 Usuário: %b%s%b\n\n' "$C4" "$C3" "$global_user" "$NC"
 }
 
 show_menu() {
@@ -52,7 +49,7 @@ show_menu() {
 }
 
 show_help() {
-    show_lumina_header
+    show_lumina_header "LUMINA GIT — Git Manager"
     cat << EOF
 
 lumina git — Gerenciador de identidade Git e repositórios

@@ -6,11 +6,12 @@ _lumina_completions() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     words=("${COMP_WORDS[@]}")
 
-    local commands="stack db git"
+    local commands="stack db git ai"
 
     local stack_cmds="start stop logs status fix-permissions show-db-info"
     local db_cmds="backup restore remove optimize-tables optimize-mariadb"
     local git_cmds="init clone configure-global apply-local"
+    local ai_cmds="agents"
 
     if [[ ${#words[@]} -eq 2 ]]; then
         # Completar o subcomando principal
@@ -27,6 +28,9 @@ _lumina_completions() {
             ;;
         git)
             COMPREPLY=( $(compgen -W "$git_cmds" -- "$cur") )
+            ;;
+        ai)
+            COMPREPLY=( $(compgen -W "$ai_cmds" -- "$cur") )
             ;;
     esac
 }

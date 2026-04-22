@@ -9,6 +9,8 @@ readonly C5='\033[0;35m'    # Menu
 readonly C6='\033[0;36m'    # Dica
 readonly NC='\033[0m'       # No Color
 # shellcheck disable=SC2034
+readonly RESET='\033[0m'    # Reset
+# shellcheck disable=SC2034
 readonly H1='\033[1;32m'    # Título primário (Verde Bold)
 # shellcheck disable=SC2034
 readonly H2='\033[0;32m'    # Título secundário (Verde)
@@ -19,7 +21,19 @@ warn()    { printf '%b⚠️  %s%b\n' "$C3" "$1" "$NC" >&2; }
 die()     { printf '%b❌ ERRO: %s%b\n' "$C1" "$1" "$NC" >&2; exit 1; }
 
 show_lumina_header() {
-    printf '%b=== Lumina CLI v2.0.0 ===%b\n' "$C5" "$NC"
+    local subtitle="${1:-LUMINA CLI ENGINE}"
+    clear
+    printf '%b\n' ""
+    printf '%b\n' "░██                            ░██                      "
+    printf '%b\n' "░██                                                     "
+    printf '%b\n' "░██ ░██    ░██ ░█████████████  ░██░████████   ░██████   "
+    printf '%b\n' "░██ ░██    ░██ ░██   ░██   ░██ ░██░██    ░██       ░██  "
+    printf '%b\n' "░██ ░██    ░██ ░██   ░██   ░██ ░██░██    ░██  ░███████  "
+    printf '%b\n' "░██ ░██   ░███ ░██   ░██   ░██ ░██░██    ░██ ░██   ░██  "
+    printf '%b\n' "░██  ░█████░██ ░██   ░██   ░██ ░██░██    ░██  ░█████░██ "
+    printf '%b\n' ""
+    printf '%b\n' "${H2}${subtitle}${RESET} "
+    printf '%b\n' ""
 }
 
 # Detecta o gerenciador de pacotes disponível no sistema.
