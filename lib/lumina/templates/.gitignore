@@ -78,6 +78,53 @@ package-lock.json
 .yarn/
 
 # ------------------------------------------------------------------------------
+# Ferramentas de IA (configs locais, histórico e instruções de agentes)
+# ------------------------------------------------------------------------------
+
+# Arquivos de instrução de agentes IA
+CLAUDE.md
+CODEX.md
+AGENTS.md
+GEMINI.md
+
+# Arquivos de exclusão de contexto para IA
+.aiexclude
+.geminiignore
+.aignore
+.aiignore
+
+# Claude Code (Anthropic)
+.claude/
+
+# OpenAI Codex
+.codex/
+
+# Google Gemini
+.gemini/
+
+# Cursor AI
+.cursor/
+.cursorrules
+.cursorignore
+
+# Windsurf (Codeium)
+.windsurfrules
+.windsurf/
+
+# Aider
+.aider*
+aider.conf.yml
+
+# Continue.dev
+.continue/
+
+# Codeium
+.codeium/
+
+# Tabnine
+.tabnine/
+
+# ------------------------------------------------------------------------------
 # Credenciais e segurança
 # ------------------------------------------------------------------------------
 *.pem

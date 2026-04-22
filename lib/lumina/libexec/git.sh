@@ -44,6 +44,7 @@ show_menu() {
     printf '   %b2.%b Iniciar NOVO repositório aqui\n' "$C2" "$NC"
     printf '   %b3.%b Clonar repositório e configurar\n' "$C2" "$NC"
     printf '   %b4.%b Aplicar identidade neste repo\n' "$C2" "$NC"
+    printf '   %b5.%b Atualizar .gitignore\n' "$C2" "$NC"
     printf '   %b0.%b Sair\n' "$C1" "$NC"
     printf '%b=====================================%b\n' "$H2" "$NC"
 }
@@ -60,6 +61,7 @@ USO:
   lumina git init               Inicia novo repositório e aplica configurações
   lumina git clone              Clona repositório e aplica configurações locais
   lumina git apply-local        Aplica identidade no repositório atual
+  lumina git update-gitignore   Atualiza o .gitignore com o template mais recente
 EOF
 }
 
@@ -116,6 +118,27 @@ EOF
     fi
 
     success ".gitignore criado."
+}
+
+_update_gitignore() {
+    if [[ ! -f ".gitignore" ]]; then
+        warn ".gitignore não encontrado neste diretório. Gerando..."
+    else
+        read -r -p "   .gitignore será sobrescrito. Confirmar? [s/N]: " confirm
+        if [[ ! "$confirm" =~ ^[sS]$ ]]; then
+            info ".gitignore mantido sem alterações."
+            return 0
+        fi
+    fi
+
+    info "Atualizando .gitignore..."
+
+    if [[ -f "$TEMPLATES_DIR/.gitignore" ]]; then
+        cp "$TEMPLATES_DIR/.gitignore" .gitignore
+        success ".gitignore atualizado com o template mais recente."
+    else
+        die "Template .gitignore não encontrado em: $TEMPLATES_DIR"
+    fi
 }
 
 _create_aiexclude() {
@@ -287,12 +310,17 @@ _run_menu() {
                 printf '%b──────────────────────────────────%b\n' "$C4" "$NC"
                 read -r -p "   Pressione Enter para voltar ao menu..."
                 ;;
+            5)
+                _update_gitignore
+                printf '%b──────────────────────────────────%b\n' "$C4" "$NC"
+                read -r -p "   Pressione Enter para voltar ao menu..."
+                ;;
             0)
                 printf '\n%bAté logo!%b\n\n' "$C2" "$NC"
                 exit 0
                 ;;
             *)
-                warn "Opção inválida. Digite um número de 0 a 4."
+                warn "Opção inválida. Digite um número de 0 a 5."
                 sleep 1
                 ;;
         esac
@@ -313,6 +341,7 @@ main() {
         init)             init_repo ;;
         clone)            clone_repo ;;
         apply-local)      apply_local_configs ;;
+        update-gitignore) _update_gitignore ;;
         -h|--help)        show_help ;;
         "")               _run_menu ;;
         *)                warn "Subcomando desconhecido: $cmd"; show_help; exit 1 ;;
