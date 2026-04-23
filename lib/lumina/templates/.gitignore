@@ -97,6 +97,7 @@ GEMINI.md
 .claude/
 
 # OpenAI Codex
+.codex
 .codex/
 
 # Google Gemini
@@ -123,6 +124,10 @@ aider.conf.yml
 
 # Tabnine
 .tabnine/
+
+# lumina-ai-vault
+.aivault.json
+
 
 # ------------------------------------------------------------------------------
 # Credenciais e segurança

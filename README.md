@@ -17,6 +17,7 @@ CLI modular em Bash para gerenciamento do ecossistema Lumina — ambientes Docke
   - [lumina stack](#lumina-stack)
   - [lumina db](#lumina-db)
   - [lumina git](#lumina-git)
+  - [lumina ai](#lumina-ai)
 - [Configuração](#configuração)
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Autocomplete](#autocomplete)
@@ -132,6 +133,25 @@ lumina git --help             Exibe esta ajuda
 
 O credential helper é detectado automaticamente em múltiplos caminhos conhecidos
 (Debian/Ubuntu, Fedora, Arch), com fallback para `cache`.
+
+---
+
+### lumina ai
+
+Gerencia arquivos de contexto para assistentes de IA (Claude, Gemini, etc).
+
+```
+lumina ai              Abre o menu interativo
+lumina ai agents       Gera CLAUDE.md, GEMINI.md e AGENTS.md no diretório atual
+lumina ai --help       Exibe esta ajuda
+```
+
+**`lumina ai agents`** permite escolher entre três perfis de projeto:
+- **Básico:** Instruções gerais de desenvolvimento e comportamento.
+- **MCP:** Adiciona diretrizes para o Model Context Protocol.
+- **BASH/Shell:** Adiciona regras de estilo e segurança para scripts Bash.
+
+Os arquivos gerados (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`) servem para fornecer contexto imediato aos assistentes sobre as regras de codificação, ferramentas preferidas e padrões do projeto atual.
 
 ---
 

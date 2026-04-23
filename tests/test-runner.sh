@@ -102,6 +102,7 @@ test_arquivos_libexec() {
     assert_file_exists "libexec/stack.sh existe" "$LIBEXEC/stack.sh"
     assert_file_exists "libexec/db.sh existe"    "$LIBEXEC/db.sh"
     assert_file_exists "libexec/git.sh existe"   "$LIBEXEC/git.sh"
+    assert_file_exists "libexec/ai.sh existe"    "$LIBEXEC/ai.sh"
 }
 
 test_templates() {
@@ -110,6 +111,15 @@ test_templates() {
     assert_file_exists "template .gitignore existe"              "$TMPL/.gitignore"
     assert_file_exists "template .aiexclude existe"              "$TMPL/.aiexclude"
     assert_file_exists "template moodle-performance.cnf existe"  "$TMPL/moodle-performance.cnf"
+    assert_file_exists "template BASIC.md existe"               "$TMPL/BASIC.md"
+    assert_file_exists "template MCP.md existe"                 "$TMPL/MCP.md"
+    assert_file_exists "template SHELL.md existe"               "$TMPL/SHELL.md"
+}
+
+test_subcomando_ai() {
+    printf '\n%b[ai.sh] Execução do subcomando%b\n' "$C5" "$NC"
+    local LUMINA="$ROOT_DIR/bin/lumina"
+    assert_equals "lumina ai --help retorna 0" "0" "$($LUMINA ai --help >/dev/null 2>&1; echo $?)"
 }
 
 test_binario() {
@@ -147,6 +157,7 @@ main() {
     test_arquivos_lib
     test_arquivos_libexec
     test_templates
+    test_subcomando_ai
     test_binario
     test_dependencias
     test_config_carregamento
