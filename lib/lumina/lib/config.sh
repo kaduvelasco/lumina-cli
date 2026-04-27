@@ -10,9 +10,10 @@ readonly CONFIG_DIR="$HOME/.lumina"
 readonly CONFIG_FILE="$CONFIG_DIR/config.env"
 
 # Valores padrão
-readonly _DEFAULT_WORKSPACE="$HOME/workspace/docker"
+readonly _WORKSPACE_ROOT="/srv/workspace"
+readonly _DEFAULT_WORKSPACE="$_WORKSPACE_ROOT/docker"
 readonly _DEFAULT_CONTAINER="mariadb"
-readonly _DEFAULT_BACKUP_DIR="$HOME/workspace/backups"
+readonly _DEFAULT_BACKUP_DIR="$_WORKSPACE_ROOT/backup"
 readonly _DEFAULT_BACKUPS_MANTER=3
 
 _criar_config_padrao() {

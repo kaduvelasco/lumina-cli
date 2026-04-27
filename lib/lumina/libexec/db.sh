@@ -286,7 +286,8 @@ executar_restore() {
     printf "\n"
     info "Restaurando... Isso pode levar alguns minutos."
 
-    if _executar_mysql < "$file_full"; then
+    if docker exec -i -e MYSQL_PWD="$DB_PASS" "$CONTAINER_NAME" \
+        mariadb -u "$DB_USER" < "$file_full"; then
         success "Restore concluído com sucesso!"
     else
         warn "Erro durante o restore."

@@ -71,21 +71,33 @@ _verificar_prerequisitos() {
         real_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
     fi
 
+    local config_file="$real_home/.lumina/config.env"
+
     printf '\n'
     info "Verificando pré-requisitos do ecossistema Lumina..."
 
-    # lumina-stack — workspace Docker
-    if [[ ! -d "$real_home/workspace/docker" ]]; then
-        warn "lumina-stack não detectado: ~/workspace/docker não existe."
+    # lumina-stack — config e workspace
+    local workspace=""
+    if [[ ! -f "$config_file" ]]; then
+        warn "Configuração não encontrada: $config_file não existe."
         printf "   %b→ 'lumina stack' e 'lumina db' não funcionarão sem o lumina-stack.%b\n" "$C3" "$NC"
         printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-stack%b\n' "$C6" "$NC"
     else
-        success "lumina-stack detectado: ~/workspace/docker encontrado."
+        workspace=$(grep -m1 '^WORKSPACE=' "$config_file" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+        workspace="${workspace/#\~/$real_home}"
+        if [[ ! -d "$workspace" ]]; then
+            warn "lumina-stack não detectado: $workspace não existe."
+            printf "   %b→ 'lumina stack' e 'lumina db' não funcionarão sem o lumina-stack.%b\n" "$C3" "$NC"
+            printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-stack%b\n' "$C6" "$NC"
+            workspace=""
+        else
+            success "lumina-stack detectado: $workspace encontrado."
+        fi
     fi
 
-    # lumina-stack — arquivo .env com credenciais
-    if [[ ! -f "$real_home/workspace/docker/.env" ]]; then
-        warn "Arquivo .env não encontrado em ~/workspace/docker."
+    # lumina-stack — arquivo .env com credenciais (apenas se o workspace foi encontrado)
+    if [[ -n "$workspace" && ! -f "$workspace/.env" ]]; then
+        warn "Arquivo .env não encontrado em $workspace."
         printf "   %b→ 'lumina stack db-info' não conseguirá ler as credenciais.%b\n" "$C3" "$NC"
     fi
 

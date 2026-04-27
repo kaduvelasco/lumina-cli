@@ -132,8 +132,10 @@ pre_flight_check() {
     fi
 
     # 3. Permissão de escrita no workspace
-    if [[ -d "$HOME/workspace/www/html" && ! -w "$HOME/workspace/www/html" ]]; then
-        warn "Sem permissão de escrita em ~/workspace/www/html"
+    local www_dir
+    www_dir="$(dirname "$WORKSPACE")/www/html"
+    if [[ -d "$www_dir" && ! -w "$www_dir" ]]; then
+        warn "Sem permissão de escrita em $www_dir"
         printf "      Execute: lumina stack permissions\n"
         (( issues++ )) || true
     fi
@@ -224,7 +226,8 @@ stop_environment() {
 }
 
 logs_menu() {
-    local log_dir="$HOME/workspace/logs"
+    local log_dir
+    log_dir="$(dirname "$WORKSPACE")/logs"
 
     if [[ ! -d "$log_dir" ]]; then
         die "Diretório de logs não encontrado em $log_dir"
@@ -303,7 +306,8 @@ show_db_info() {
 }
 
 fix_permissions() {
-    local workspace_dir="$HOME/workspace"
+    local workspace_dir
+    workspace_dir="$(dirname "$WORKSPACE")"
     local silent="${1:-}"
 
     [[ -z "$silent" ]] && info "Ajustando permissões em $workspace_dir..."
@@ -319,10 +323,10 @@ fix_permissions() {
         sudo find "$workspace_dir/www" -type f -exec chmod 664 {} + 2>/dev/null || true
     fi
 
-    if [[ -d "$workspace_dir/backups" ]]; then
-        sudo chown -R "$USER":www-data "$workspace_dir/backups" 2>/dev/null || \
-            { [[ -z "$silent" ]] && warn "Não foi possível ajustar dono de $workspace_dir/backups"; }
-        sudo find "$workspace_dir/backups" -type d -exec chmod 775 {} + 2>/dev/null || true
+    if [[ -d "$workspace_dir/backup" ]]; then
+        sudo chown -R "$USER":www-data "$workspace_dir/backup" 2>/dev/null || \
+            { [[ -z "$silent" ]] && warn "Não foi possível ajustar dono de $workspace_dir/backup"; }
+        sudo find "$workspace_dir/backup" -type d -exec chmod 775 {} + 2>/dev/null || true
     fi
 
     # Moodle dataroot precisa de 777 pois o MegaSync não preserva permissões
@@ -373,18 +377,23 @@ show_status() {
 # MENU INTERATIVO
 # ==============================================================================
 
+_pause() {
+    printf '\n'
+    read -r -p "   Pressione ENTER para voltar ao menu..."
+}
+
 _run_menu() {
     while true; do
         show_menu
         read -r -p "Escolha uma opção: " option
 
         case "$option" in
-            1) start_environment ;;
-            2) logs_menu ;;
-            3) show_db_info ;;
-            4) stop_environment ;;
-            5) fix_permissions ;;
-            6) show_status ;;
+            1) start_environment; _pause ;;
+            2) logs_menu; _pause ;;
+            3) show_db_info; _pause ;;
+            4) stop_environment; _pause ;;
+            5) fix_permissions; _pause ;;
+            6) show_status; _pause ;;
             0)
                 printf '\n%bAté logo!%b\n\n' "$C2" "$NC"
                 exit 0
