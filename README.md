@@ -55,6 +55,8 @@ sudo ./install.sh
 ```
 
 O instalador:
+- Detecta se o lumina já está instalado e, nesse caso, pergunta se deseja atualizar
+- Em caso de atualização, remove completamente a versão anterior antes de instalar (sem arquivos órfãos)
 - Copia `bin/lumina` para `/usr/local/bin/`
 - Instala as bibliotecas em `/usr/local/lib/lumina/`
 - Instala os scripts de autocomplete (Bash e Zsh, quando disponíveis)
@@ -142,16 +144,36 @@ Gerencia arquivos de contexto para assistentes de IA (Claude, Gemini, etc).
 
 ```
 lumina ai              Abre o menu interativo
-lumina ai agents       Gera CLAUDE.md, GEMINI.md e AGENTS.md no diretório atual
+lumina ai agents       Gera arquivos de contexto no diretório atual
 lumina ai --help       Exibe esta ajuda
 ```
 
-**`lumina ai agents`** permite escolher entre três perfis de projeto:
-- **Básico:** Instruções gerais de desenvolvimento e comportamento.
-- **MCP:** Adiciona diretrizes para o Model Context Protocol.
-- **BASH/Shell:** Adiciona regras de estilo e segurança para scripts Bash.
+**`lumina ai agents`** conduz duas perguntas e então gera os arquivos:
 
-Os arquivos gerados (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`) servem para fornecer contexto imediato aos assistentes sobre as regras de codificação, ferramentas preferidas e padrões do projeto atual.
+**1. Qual modelo você deseja usar?**
+
+| Opção | Instrução adicionada |
+|-------|----------------------|
+| Linux Bash | `@instructions/BASH.md` |
+| MCP Server | `@instructions/MCP.md` |
+| PHP | `@instructions/PHP.md` |
+
+**2. Deseja incluir instruções do Code Review Graph?**
+
+Se `Sim`, acrescenta ao contexto as instruções de uso das ferramentas MCP `code-review-graph` e gera o arquivo `.code-review-graphignore` com padrões de exclusão para dependências, arquivos gerados, build artifacts e IDE files.
+
+**Arquivos gerados no diretório atual:**
+
+| Arquivo | Conteúdo |
+|---------|----------|
+| `CLAUDE.md` | Base + bloco exclusivo Claude (Subagents) + Language-Specific Standards |
+| `GEMINI.md` | Base + bloco exclusivo Gemini (Subagents) + Language-Specific Standards |
+| `AGENTS.md` | Base + Language-Specific Standards |
+| `.windsurfrules` | Idêntico ao AGENTS.md |
+| `.cursorrules` | Idêntico ao AGENTS.md |
+| `.code-review-graphignore` | Apenas quando Code Review Graph = Sim |
+
+Além dos arquivos acima, é criada a pasta `instructions/` com o arquivo de padrões da linguagem selecionada. Para PHP, também é copiado o diretório `php-references/` com referências PSR.
 
 ---
 
@@ -190,13 +212,24 @@ lumina-cli/
 │   │   ├── config.sh                 # Carrega e exporta ~/.lumina/config.env
 │   │   └── validators.sh             # require_command, require_container
 │   ├── libexec/
+│   │   ├── ai.sh                     # Subcomando: lumina ai
 │   │   ├── stack.sh                  # Subcomando: lumina stack
 │   │   ├── db.sh                     # Subcomando: lumina db
 │   │   └── git.sh                    # Subcomando: lumina git
 │   └── templates/
+│       ├── BASIC.md                  # Base comum para todos os agentes
+│       ├── ONLY-CLAUDE.md            # Bloco exclusivo para CLAUDE.md
+│       ├── ONLY-GEMINI.md            # Bloco exclusivo para GEMINI.md
+│       ├── CODE-REVIEW-GRAPH.md      # Instruções MCP code-review-graph
+│       ├── code-review-graphignore   # Padrões de exclusão do grafo
 │       ├── .gitignore                # Template Moodle/PHP
 │       ├── .aiexclude                # Exclusões para ferramentas de IA
-│       └── moodle-performance.cnf   # Template de tuning MariaDB
+│       ├── moodle-performance.cnf    # Template de tuning MariaDB
+│       └── instructions/
+│           ├── BASH.md               # Padrões Bash/Shell
+│           ├── MCP.md                # Padrões MCP Server
+│           ├── PHP.md                # Padrões PHP
+│           └── php-references/       # Referências PSR
 └── tests/
     └── test-runner.sh                # Suíte de testes (30 casos)
 ```
