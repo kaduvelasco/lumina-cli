@@ -40,12 +40,12 @@ lumina ai — Gerenciador de contexto para assistentes de IA
 
 USO:
   lumina ai              Abre o menu interativo
-  lumina ai agents       Gera CLAUDE.md, GEMINI.md e AGENTS.md no diretório atual
+  lumina ai agents       Gera CLAUDE.md, GEMINI.md, AGENTS.md, .windsurfrules e .cursorrules
 
-TIPOS DE PROJETO:
-  1. Básico      — Diretrizes gerais para qualquer projeto
-  2. MCP         — Básico + instruções para Model Context Protocol
-  3. BASH/Shell  — Básico + diretrizes para scripts Bash/Shell
+MODELOS DISPONÍVEIS:
+  1. Linux Bash   — Diretrizes para scripts Bash/Shell
+  2. MCP Server   — Diretrizes para Model Context Protocol
+  3. PHP          — Diretrizes para desenvolvimento PHP
 EOF
 }
 
@@ -58,7 +58,7 @@ _ler_template() {
     if [[ ! -f "$file" ]]; then
         die "Template não encontrado: $file"
     fi
-    cat "$file"
+    cat -- "$file"
 }
 
 _confirmar_sobrescrita() {
@@ -72,13 +72,25 @@ _confirmar_sobrescrita() {
 }
 
 _gravar_arquivos_ai() {
-    local conteudo="$1"
-    local arquivos=("CLAUDE.md" "GEMINI.md" "AGENTS.md")
+    # $1 = conteudo para CLAUDE.md
+    # $2 = conteudo para GEMINI.md
+    # $3 = conteudo para AGENTS.md, .windsurfrules, .cursorrules
+    local conteudo_claude="$1"
+    local conteudo_gemini="$2"
+    local conteudo_padrao="$3"
     local gravados=0
     local ignorados=0
 
     printf "\n"
-    for arquivo in "${arquivos[@]}"; do
+
+    local arquivo conteudo
+    for arquivo in "CLAUDE.md" "GEMINI.md" "AGENTS.md" ".windsurfrules" ".cursorrules"; do
+        case "$arquivo" in
+            CLAUDE.md)  conteudo="$conteudo_claude" ;;
+            GEMINI.md)  conteudo="$conteudo_gemini" ;;
+            *)          conteudo="$conteudo_padrao" ;;
+        esac
+
         if _confirmar_sobrescrita "$arquivo"; then
             printf '%s\n' "$conteudo" > "$arquivo"
             success "$arquivo criado."
@@ -94,6 +106,62 @@ _gravar_arquivos_ai() {
     [[ "$ignorados" -gt 0 ]] && info "$ignorados arquivo(s) ignorado(s)."
 }
 
+_gerar_graphignore() {
+    local arquivo=".code-review-graphignore"
+    local src="$TEMPLATES_DIR/code-review-graphignore"
+
+    if [[ ! -f "$src" ]]; then
+        warn "Template não encontrado: $src"
+        return 1
+    fi
+
+    if _confirmar_sobrescrita "$arquivo"; then
+        cp -- "$src" "$arquivo"
+        success "$arquivo criado."
+    else
+        info "$arquivo mantido sem alterações."
+    fi
+}
+
+_copiar_instructions() {
+    local modelo="$1"
+    local dest_dir
+    dest_dir="$(pwd)/instructions"
+
+    mkdir -p -- "$dest_dir"
+
+    case "$modelo" in
+        1)
+            if _confirmar_sobrescrita "$dest_dir/BASH.md"; then
+                cp -- "$TEMPLATES_DIR/instructions/BASH.md" "$dest_dir/BASH.md"
+                success "instructions/BASH.md copiado."
+            else
+                info "instructions/BASH.md mantido sem alterações."
+            fi
+            ;;
+        2)
+            if _confirmar_sobrescrita "$dest_dir/MCP.md"; then
+                cp -- "$TEMPLATES_DIR/instructions/MCP.md" "$dest_dir/MCP.md"
+                success "instructions/MCP.md copiado."
+            else
+                info "instructions/MCP.md mantido sem alterações."
+            fi
+            ;;
+        3)
+            if _confirmar_sobrescrita "$dest_dir/PHP.md"; then
+                cp -- "$TEMPLATES_DIR/instructions/PHP.md" "$dest_dir/PHP.md"
+                success "instructions/PHP.md copiado."
+            else
+                info "instructions/PHP.md mantido sem alterações."
+            fi
+            if [[ -d "$TEMPLATES_DIR/instructions/php-references" ]]; then
+                cp -r -- "$TEMPLATES_DIR/instructions/php-references" "$dest_dir/"
+                success "instructions/php-references/ copiado."
+            fi
+            ;;
+    esac
+}
+
 # ==============================================================================
 # AÇÃO: agents
 # ==============================================================================
@@ -102,36 +170,62 @@ criar_agents() {
     show_lumina_header "LUMINA AI — Gerar Arquivos de Agentes"
 
     printf '%b📁 Diretório atual: %b%s%b\n\n' "$C4" "$C3" "$(pwd)" "$NC"
-    printf '%bQual o tipo de projeto?%b\n\n' "$C4" "$NC"
-    printf '   %b1.%b Básico\n' "$C2" "$NC"
-    printf '   %b2.%b MCP\n' "$C2" "$NC"
-    printf '   %b3.%b BASH/Shell\n' "$C2" "$NC"
-    printf '\n'
-    read -r -p "   Opção [1-3]: " tipo
 
-    local conteudo
-    case "$tipo" in
-        1)
-            info "Gerando arquivos para projeto Básico..."
-            conteudo=$(_ler_template "BASIC.md")
-            ;;
-        2)
-            info "Gerando arquivos para projeto MCP..."
-            conteudo=$(_ler_template "BASIC.md")
-            conteudo+=$'\n'"$(_ler_template "MCP.md")"
-            ;;
-        3)
-            info "Gerando arquivos para projeto BASH/Shell..."
-            conteudo=$(_ler_template "BASIC.md")
-            conteudo+=$'\n'"$(_ler_template "SHELL.md")"
-            ;;
-        *)
-            warn "Opção inválida."
-            return 1
-            ;;
+    # --- Pergunta 1: modelo ---
+    printf '%bQual modelo você deseja usar?%b\n\n' "$C4" "$NC"
+    printf '   %b1.%b Linux Bash\n' "$C2" "$NC"
+    printf '   %b2.%b MCP Server\n' "$C2" "$NC"
+    printf '   %b3.%b PHP\n' "$C2" "$NC"
+    printf '\n'
+    read -r -p "   Opção [1-3]: " modelo
+
+    case "$modelo" in
+        1) info "Modelo selecionado: Linux Bash" ;;
+        2) info "Modelo selecionado: MCP Server" ;;
+        3) info "Modelo selecionado: PHP" ;;
+        *) warn "Opção inválida."; return 1 ;;
     esac
 
-    _gravar_arquivos_ai "$conteudo"
+    # --- Pergunta 2: Code Review Graph ---
+    printf '\n%bDeseja incluir instruções do Code Review Graph?%b\n\n' "$C4" "$NC"
+    printf '   %b1.%b Sim\n' "$C2" "$NC"
+    printf '   %b2.%b Não\n' "$C2" "$NC"
+    printf '\n'
+    read -r -p "   Opção [1-2]: " use_graph
+
+    case "$use_graph" in
+        1) info "Code Review Graph: incluído" ;;
+        2) info "Code Review Graph: não incluído" ;;
+        *) warn "Opção inválida."; return 1 ;;
+    esac
+
+    # --- Montar conteúdo ---
+    local conteudo_base conteudo_sufixo
+    conteudo_base=$(_ler_template "BASIC.md")
+
+    conteudo_sufixo=$'\n\n## Language-Specific Standards\n\n'
+    case "$modelo" in
+        1) conteudo_sufixo+='@instructions/BASH.md' ;;
+        2) conteudo_sufixo+='@instructions/MCP.md' ;;
+        3) conteudo_sufixo+='@instructions/PHP.md' ;;
+    esac
+
+    if [[ "$use_graph" == "1" ]]; then
+        conteudo_sufixo+=$'\n\n'"$(_ler_template "CODE-REVIEW-GRAPH.md")"
+    fi
+
+    local conteudo_claude conteudo_gemini conteudo_padrao
+    conteudo_claude="${conteudo_base}"$'\n\n'"$(_ler_template "ONLY-CLAUDE.md")${conteudo_sufixo}"
+    conteudo_gemini="${conteudo_base}"$'\n\n'"$(_ler_template "ONLY-GEMINI.md")${conteudo_sufixo}"
+    conteudo_padrao="${conteudo_base}${conteudo_sufixo}"
+
+    # --- Gravar arquivos ---
+    _gravar_arquivos_ai "$conteudo_claude" "$conteudo_gemini" "$conteudo_padrao"
+
+    [[ "$use_graph" == "1" ]] && _gerar_graphignore
+
+    # --- Copiar instruções ---
+    _copiar_instructions "$modelo"
 }
 
 # ==============================================================================

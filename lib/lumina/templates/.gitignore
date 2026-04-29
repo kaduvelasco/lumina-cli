@@ -119,6 +119,12 @@ aider.conf.yml
 # Tabnine
 .tabnine/
 
+# outros / mcps
+.code-review-graph/
+.kiro/
+.mcp.json
+.opencode.json
+
 
 # ------------------------------------------------------------------------------
 # Credenciais e segurança
@@ -134,3 +140,5 @@ secrets.*
 .htpasswd
 auth.json
 wp-config.php
+# Added by code-review-graph
+.code-review-graph/

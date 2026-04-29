@@ -21,6 +21,35 @@ _verificar_root() {
     fi
 }
 
+_ja_instalado() {
+    [[ -f "$INSTALL_DIR/lumina" ]]
+}
+
+_remover_instalacao() {
+    info "Removendo instalação anterior..."
+    rm -f  -- "$INSTALL_DIR/lumina"
+    rm -rf -- "/usr/local/lib/lumina"
+    rm -f  -- "$COMPLETIONS_BASH_DIR/lumina"
+    rm -f  -- "$COMPLETIONS_ZSH_DIR/_lumina"
+    success "Instalação anterior removida."
+}
+
+_verificar_atualizacao() {
+    if ! _ja_instalado; then
+        return 0
+    fi
+
+    warn "Lumina já está instalado."
+    printf '%b' "   Deseja atualizar? (${C3}s${RESET}/N): "
+    read -r confirm
+    if [[ ! "$confirm" =~ ^[sS]$ ]]; then
+        printf '\n%bOperação cancelada.%b\n\n' "$C3" "$NC"
+        exit 0
+    fi
+
+    _remover_instalacao
+}
+
 _instalar_binario() {
     info "Instalando lumina em $INSTALL_DIR..."
     install -m 755 "$SCRIPT_DIR/bin/lumina" "$INSTALL_DIR/lumina"
@@ -129,6 +158,7 @@ _mostrar_instrucoes_pos_install() {
 main() {
     show_lumina_header
     _verificar_root
+    _verificar_atualizacao
     _instalar_binario
     _instalar_biblioteca
     _instalar_completions
