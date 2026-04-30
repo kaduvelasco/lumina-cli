@@ -1,13 +1,9 @@
 # ==============================================================================
-# .gitignore — LuminaDev
-#
-# Modelo padrão para projetos PHP/Moodle.
-# Gerado automaticamente pelo comando 'lumina git' em cada repositório.
+# .gitignore — LuminaCli
+# This is a generic file; adjust it to your needs.
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-# Sistema operacional
-# ------------------------------------------------------------------------------
+# Operating System
 .DS_Store
 .DS_Store?
 Thumbs.db
@@ -15,120 +11,53 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 
-# ------------------------------------------------------------------------------
-# IDEs e editores
-# ------------------------------------------------------------------------------
+# IDEs and Editors
 .idea/
 .vscode/
 .vscodium/
 .zed/
-*.swp
-*.swo
-*~
 .project
 .classpath
 .settings/
+*.swp
+*.swo
+*~
 *.sublime-project
 *.sublime-workspace
 
-# ------------------------------------------------------------------------------
-# Dependências
-# ------------------------------------------------------------------------------
+# Dependencies and Package Managers
 node_modules/
 vendor/
 bower_components/
-
-# ------------------------------------------------------------------------------
-# Build, cache e temporários
-# ------------------------------------------------------------------------------
-/dist/
-/build/
-/.cache/
-/.tmp/
-/tmp/
-*.log
-*.log.*
-
-# ------------------------------------------------------------------------------
-# Moodle específico
-# ------------------------------------------------------------------------------
-/moodledata/
-/config.php
-/local/
-/theme/*/style/
-*.session
-
-# ------------------------------------------------------------------------------
-# PHP
-# ------------------------------------------------------------------------------
-/composer.lock
-.env
-.env.*
-*.env
-
-# ------------------------------------------------------------------------------
-# JavaScript / Node
-# ------------------------------------------------------------------------------
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-yarn.lock
-package-lock.json
 .npm/
 .yarn/
 
-# ------------------------------------------------------------------------------
-# Ferramentas de IA (configs locais, histórico e instruções de agentes)
-# ------------------------------------------------------------------------------
+# Lockfiles (Optional: remove if the project requires fixed versions in git)
+composer.lock
+package-lock.json
+yarn.lock
 
-# Arquivos de exclusão de contexto para IA
-.aiexclude
-.geminiignore
-.aignore
-.aiignore
+# Build, Cache, and Temporaries
+dist/
+build/
+.cache/
+.tmp/
+tmp/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Claude Code (Anthropic)
-.claude/
+# Moodle Specific
+moodledata/
+config.php
+*.session
 
-# OpenAI Codex
-.codex
-.codex/
-
-# Google Gemini
-.gemini/
-
-# Cursor AI
-.cursor/
-.cursorrules
-.cursorignore
-
-# Windsurf (Codeium)
-.windsurfrules
-.windsurf/
-
-# Aider
-.aider*
-aider.conf.yml
-
-# Continue.dev
-.continue/
-
-# Codeium
-.codeium/
-
-# Tabnine
-.tabnine/
-
-# outros / mcps
-.code-review-graph/
-.kiro/
-.mcp.json
-.opencode.json
-
-
-# ------------------------------------------------------------------------------
-# Credenciais e segurança
-# ------------------------------------------------------------------------------
+# PHP & Security
+.env
+.env.*
+*.env
 *.pem
 *.key
 *.p12
@@ -140,5 +69,37 @@ secrets.*
 .htpasswd
 auth.json
 wp-config.php
-# Added by code-review-graph
+
+# AI Tools & MCPs (Code Assistants)
+
+# Context Exclusion Files
+.aiexclude
+.aignore
+.aiignore
+.geminiignore
+.cursorignore
+.code-review-graphignore
+
+# Rule and Instruction Files (Local)
+.cursorrules
+.windsurfrules
+aider.conf.yml
+
+# Agent Data Directories
+.claude/
+.gemini/
+.cursor/
+.windsurf/
+.aider*
+.continue/
+.codeium/
+.tabnine/
+.codex/
+.codex
+
+# MCPs, Graphs, and Other Metadata
+.mcp.json
+.opencode.json
+.aivault.json
+.kiro/
 .code-review-graph/

@@ -60,19 +60,17 @@ assert_command_exists() {
 # --- suítes de testes ---
 
 test_utils_cores() {
-    printf '\n%b[utils.sh] Constantes de cores%b\n' "$C5" "$NC"
-    assert_equals "C1 definido" '\033[0;31m' "$C1"
-    assert_equals "C2 definido" '\033[0;32m' "$C2"
-    assert_equals "C3 definido" '\033[0;33m' "$C3"
-    assert_equals "C4 definido" '\033[0;34m' "$C4"
-    assert_equals "C5 definido" '\033[0;35m' "$C5"
-    assert_equals "C6 definido" '\033[0;36m' "$C6"
-    assert_equals "H1 definido" '\033[1;32m' "$H1"
-    assert_equals "H2 definido" '\033[0;32m' "$H2"
+    printf '\n%b[utils.sh] Constantes de cores%b\n' "$C4" "$NC"
+    assert_equals "C1 definido" '\033[0;31m'     "$C1"
+    assert_equals "C2 definido" '\033[0;32m'     "$C2"
+    assert_equals "C3 definido" '\033[0;33m'     "$C3"
+    assert_equals "C4 definido" '\033[38;5;246m' "$C4"
+    assert_equals "H1 definido" '\033[0m'        "$H1"
+    assert_equals "H2 definido" '\033[0m'        "$H2"
 }
 
 test_utils_pkg_manager() {
-    printf '\n%b[utils.sh] detect_pkg_manager / ensure_pkg%b\n' "$C5" "$NC"
+    printf '\n%b[utils.sh] detect_pkg_manager / ensure_pkg%b\n' "$C4" "$NC"
     local mgr
     mgr=$(detect_pkg_manager 2>/dev/null || echo "nenhum")
     assert_equals "detect_pkg_manager retorna valor não-vazio" "1" "$([[ -n "$mgr" ]] && echo 1 || echo 0)"
@@ -83,21 +81,21 @@ test_utils_pkg_manager() {
 }
 
 test_utils_funcoes() {
-    printf '\n%b[utils.sh] Funções de saída%b\n' "$C5" "$NC"
+    printf '\n%b[utils.sh] Funções de saída%b\n' "$C4" "$NC"
     assert_equals "success retorna 0" "0" "$(success "ok" >/dev/null 2>&1; echo $?)"
     assert_equals "info retorna 0"    "0" "$(info "ok" >/dev/null 2>&1; echo $?)"
     assert_equals "warn retorna 0"    "0" "$(warn "ok" >/dev/null 2>&1; echo $?)"
 }
 
 test_arquivos_lib() {
-    printf '\n%b[estrutura] Arquivos de lib%b\n' "$C5" "$NC"
+    printf '\n%b[estrutura] Arquivos de lib%b\n' "$C4" "$NC"
     assert_file_exists "lib/utils.sh existe"      "$LIB_DIR/utils.sh"
     assert_file_exists "lib/config.sh existe"     "$LIB_DIR/config.sh"
     assert_file_exists "lib/validators.sh existe" "$LIB_DIR/validators.sh"
 }
 
 test_arquivos_libexec() {
-    printf '\n%b[estrutura] Arquivos de libexec%b\n' "$C5" "$NC"
+    printf '\n%b[estrutura] Arquivos de libexec%b\n' "$C4" "$NC"
     local LIBEXEC="$ROOT_DIR/lib/lumina/libexec"
     assert_file_exists "libexec/stack.sh existe" "$LIBEXEC/stack.sh"
     assert_file_exists "libexec/db.sh existe"    "$LIBEXEC/db.sh"
@@ -106,36 +104,41 @@ test_arquivos_libexec() {
 }
 
 test_templates() {
-    printf '\n%b[estrutura] Templates%b\n' "$C5" "$NC"
+    printf '\n%b[estrutura] Templates%b\n' "$C4" "$NC"
     local TMPL="$ROOT_DIR/lib/lumina/templates"
-    assert_file_exists "template .gitignore existe"              "$TMPL/.gitignore"
-    assert_file_exists "template .aiexclude existe"              "$TMPL/.aiexclude"
-    assert_file_exists "template moodle-performance.cnf existe"  "$TMPL/moodle-performance.cnf"
-    assert_file_exists "template BASIC.md existe"               "$TMPL/BASIC.md"
-    assert_file_exists "template MCP.md existe"                 "$TMPL/MCP.md"
-    assert_file_exists "template SHELL.md existe"               "$TMPL/SHELL.md"
+    assert_file_exists "template .gitignore existe"                  "$TMPL/.gitignore"
+    assert_file_exists "template .aiexclude existe"                  "$TMPL/.aiexclude"
+    assert_file_exists "template moodle-performance.cnf existe"      "$TMPL/moodle-performance.cnf"
+    assert_file_exists "template BASIC.md existe"                    "$TMPL/BASIC.md"
+    assert_file_exists "template ONLY-CLAUDE.md existe"              "$TMPL/ONLY-CLAUDE.md"
+    assert_file_exists "template ONLY-GEMINI.md existe"              "$TMPL/ONLY-GEMINI.md"
+    assert_file_exists "template CODE-REVIEW-GRAPH.md existe"        "$TMPL/CODE-REVIEW-GRAPH.md"
+    assert_file_exists "template code-review-graphignore existe"     "$TMPL/code-review-graphignore"
+    assert_file_exists "template instructions/BASH.md existe"        "$TMPL/instructions/BASH.md"
+    assert_file_exists "template instructions/MCP.md existe"         "$TMPL/instructions/MCP.md"
+    assert_file_exists "template instructions/PHP.md existe"         "$TMPL/instructions/PHP.md"
 }
 
 test_subcomando_ai() {
-    printf '\n%b[ai.sh] Execução do subcomando%b\n' "$C5" "$NC"
+    printf '\n%b[ai.sh] Execução do subcomando%b\n' "$C4" "$NC"
     local LUMINA="$ROOT_DIR/bin/lumina"
     assert_equals "lumina ai --help retorna 0" "0" "$($LUMINA ai --help >/dev/null 2>&1; echo $?)"
 }
 
 test_binario() {
-    printf '\n%b[estrutura] Binário principal%b\n' "$C5" "$NC"
+    printf '\n%b[estrutura] Binário principal%b\n' "$C4" "$NC"
     assert_file_exists "bin/lumina existe" "$ROOT_DIR/bin/lumina"
 }
 
 test_dependencias() {
-    printf '\n%b[dependências] Comandos externos%b\n' "$C5" "$NC"
+    printf '\n%b[dependências] Comandos externos%b\n' "$C4" "$NC"
     assert_command_exists "bash disponível"   "bash"
     assert_command_exists "git disponível"    "git"
     assert_command_exists "docker disponível" "docker"
 }
 
 test_config_carregamento() {
-    printf '\n%b[config.sh] Carregamento de configurações%b\n' "$C5" "$NC"
+    printf '\n%b[config.sh] Carregamento de configurações%b\n' "$C4" "$NC"
     # shellcheck source=/dev/null
     source "$LIB_DIR/config.sh"
     carregar_config
@@ -162,9 +165,9 @@ main() {
     test_dependencias
     test_config_carregamento
 
-    printf '\n%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n' "$C5" "$NC"
+    printf '\n%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n' "$C4" "$NC"
     printf '  Resultado: %b%d aprovados%b  %b%d falhos%b\n' "$C2" "$_PASS" "$NC" "$C1" "$_FAIL" "$NC"
-    printf '%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n\n' "$C5" "$NC"
+    printf '%b━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%b\n\n' "$C4" "$NC"
 
     [[ "$_FAIL" -eq 0 ]]
 }

@@ -74,8 +74,9 @@ _docker_compose() {
 _detect_workspace() {
     if [[ ! -d "$WORKSPACE" ]]; then
         warn "Workspace não encontrado em: $WORKSPACE"
-        printf '   %b→ Execute o lumina-stack para criar a estrutura do workspace.%b\n' "$C6" "$NC"
-        printf '   %b  https://github.com/kaduvelasco/lumina-stack%b\n' "$C6" "$NC"
+        printf '   %b→ Execute o lumina-stack para criar a estrutura do workspace.%b\n' "$C4" "$NC"
+        printf '   %b  https://github.com/kaduvelasco/lumina-stack%b\n' "$C4" "$NC"
+        local CUSTOM
         read -r -p "   Informe o caminho completo do diretório docker (ou Enter para cancelar): " CUSTOM
         [[ -z "$CUSTOM" ]] && return 1
         CUSTOM="${CUSTOM/#\~/$HOME}"

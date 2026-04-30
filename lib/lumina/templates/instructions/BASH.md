@@ -91,8 +91,8 @@ Never redefine colors. Use the variables exported by `utils.sh`:
 | `${C1}` | Red | Error |
 | `${C2}` | Green | Success |
 | `${C3}` | Yellow | Warning |
-| `${C4}` | Blue | Info |
-| `${H1}`, `${H2}` | — | Headers |
+| `${C4}` | Gray (#999999) | Info |
+| `${H1}`, `${H2}` | Default terminal | Headers |
 | `${RESET}` | — | Reset |
 
 ### Output functions

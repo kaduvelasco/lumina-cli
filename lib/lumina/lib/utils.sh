@@ -3,17 +3,14 @@
 readonly C1='\033[0;31m'    # Erro
 readonly C2='\033[0;32m'    # Sucesso
 readonly C3='\033[0;33m'    # Aviso
-readonly C4='\033[0;34m'    # Info
-readonly C5='\033[0;35m'    # Menu
-# shellcheck disable=SC2034
-readonly C6='\033[0;36m'    # Dica
+readonly C4='\033[38;5;246m' # Info
 readonly NC='\033[0m'       # No Color
 # shellcheck disable=SC2034
 readonly RESET='\033[0m'    # Reset
 # shellcheck disable=SC2034
-readonly H1='\033[1;32m'    # Título primário (Verde Bold)
+readonly H1='\033[0m'        # Título primário (cor padrão do terminal)
 # shellcheck disable=SC2034
-readonly H2='\033[0;32m'    # Título secundário (Verde)
+readonly H2='\033[0m'        # Título secundário (cor padrão do terminal)
 
 success() { printf '%b✅ %s%b\n' "$C2" "$1" "$NC"; }
 info()    { printf '%bℹ️  %s%b\n' "$C4" "$1" "$NC"; }

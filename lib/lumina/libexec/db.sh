@@ -105,7 +105,7 @@ _limpar_backups_antigos() {
         printf "\n"
         info "Mantendo os $BACKUPS_MANTER backups mais recentes..."
         while IFS= read -r arquivo; do
-            if rm "$arquivo"; then
+            if rm -- "$arquivo"; then
                 printf "   Removido: %s\n" "$(basename "$arquivo")"
             else
                 warn "Erro ao remover: $(basename "$arquivo")"
@@ -113,7 +113,7 @@ _limpar_backups_antigos() {
         done < <(find "$BACKUP_DIR" -maxdepth 1 -name "*.sql" -printf "%T@\t%p\n" \
             | sort -rn | tail -n "$remover" | cut -f2-)
         success "$remover arquivo(s) antigo(s) removido(s) localmente."
-        printf '   %b(O histórico completo permanece no Mega)%b\n' "$C6" "$NC"
+        printf '   %b(O histórico completo permanece no Mega)%b\n' "$C4" "$NC"
     fi
 }
 
@@ -227,7 +227,8 @@ remover_bancos() {
         info "Nenhum banco de dados personalizado encontrado."
     else
         while IFS= read -r db; do
-            read -r -p "   Remover o banco '${C3}${db}${NC}'? (s/N): " resp
+            printf "   Remover o banco '%b%s%b'? (s/N): " "$C3" "$db" "$NC"
+            read -r resp
             if [[ "$resp" =~ ^[sS]$ ]]; then
                 _executar_mysql -e "DROP DATABASE \`${db}\`;"
                 success "Banco '$db' removido."

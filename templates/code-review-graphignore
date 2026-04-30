@@ -1,0 +1,66 @@
+# ==============================================================================
+# .code-review-graphignore
+#
+# Excludes files and directories from the code-review-graph knowledge graph.
+# Generated automatically by 'lumina ai'.
+# ==============================================================================
+
+# --- Dependencies ---
+node_modules/**
+vendor/**
+bower_components/**
+
+# --- Generated code ---
+generated/**
+*.generated.ts
+*.generated.js
+*.generated.java
+*.generated.php
+*.g.dart
+
+# --- Build output ---
+dist/**
+build/**
+target/**
+out/**
+.cache/**
+.tmp/**
+tmp/**
+
+# --- Compiled artifacts ---
+*.class
+*.pyc
+*.pyo
+__pycache__/**
+
+# --- Lock files ---
+package-lock.json
+yarn.lock
+composer.lock
+
+# --- Test resources ---
+src/test/resources/**
+tests/fixtures/**
+
+# --- IDE files ---
+.idea/**
+.vscode/**
+.vscodium/**
+.zed/**
+
+# --- AI tooling ---
+.claude/**
+.gemini/**
+.cursor/**
+.code-review-graph/**
+
+# --- Logs ---
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Moodle ---
+moodledata/**
+theme/*/style/**

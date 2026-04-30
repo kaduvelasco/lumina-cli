@@ -1,253 +1,140 @@
-# Language Rules
+# CLAUDE.md
 
-Communication with the user must follow these rules:
-
-- Responses to the user must be written in **Brazilian Portuguese (pt-BR)**.
-- All **documentation and Markdown files must be written in English** unless explicitly defined as a translation.
-- **Code comments must be written in English.**
-- Do not mix Portuguese and English inside the same documentation file.
-
-Examples:
-
-User explanation → Portuguese  
-README / docs → English  
-Code comments → English  
+This file defines the rules and conventions that AI agents must follow when working in this repository.
 
 ---
 
-# Git Rules
+## Rule Priority
 
-AI agents must **NOT execute or simulate Git operations**.
+When rules conflict, follow this order:
 
-Do NOT:
+1. **User instructions** — always take precedence.
+2. **This file** — applies to all tasks.
+3. Existing project conventions.
+4. Default AI behavior.
 
-- run git commands
-- create commits
-- generate commit messages
-- suggest git workflows unless explicitly requested
-
-Version control is handled **manually by the user**.
-
-AI agents should only:
-
-- create files
-- modify files
-- propose changes
+Never override explicit user instructions. If something is unclear, **ask before proceeding**.
 
 ---
 
-# Scope of Changes
+## Language
 
-AI agents must:
+| Context | Language |
+|---|---|
+| Responses to the user | Brazilian Portuguese (pt-BR) |
+| Documentation (`*.md`) | English |
+| Code comments | English |
 
-- modify only files relevant to the task
-- avoid unnecessary refactors
-- avoid large rewrites unless explicitly requested
-- preserve the existing architecture and project structure
-
-Prefer **small and precise changes**.
-
----
-
-# Dependency Rules
-
-Before introducing new dependencies:
-
-- verify if the functionality already exists
-- prefer native language features
-- avoid adding heavy libraries
-
-If a dependency is necessary:
-
-- explain why it is needed
-- keep the dependency minimal
+Do **not** mix languages inside the same file.
 
 ---
 
-# Code Quality
+## Agent Behavior
+
+- Make **minimal and precise changes**.
+- Modify **only files relevant to the task**.
+- Respect the **existing project structure**.
+- Prefer **simple and readable** solutions.
+- Avoid unnecessary refactoring or large rewrites unless explicitly requested.
+- If a task requires a large refactor, **ask the user before proceeding**.
+
+---
+
+## Git Operations
+
+AI agents must **never** perform or simulate Git operations. Do not:
+
+- Run `git` commands
+- Generate commit messages
+- Suggest commits, branches, or pull requests
+
+Version control is handled **manually by the user**. Agents may only **create or modify files**.
+
+---
+
+## Dependencies
+
+Before adding any dependency:
+
+1. Check if the functionality exists in the standard library.
+2. Prefer built-in language features.
+3. If a dependency is truly required, explain why a built-in solution is insufficient.
+
+Dependencies must be **minimal and justified**.
+
+---
+
+## Code Quality
 
 Generated code must:
 
-- follow existing project conventions
-- prioritize readability
-- avoid unnecessary abstractions
-- use clear naming conventions
+- Follow existing project conventions.
+- Use clear and consistent naming.
+- Prioritize readability over cleverness.
+- Avoid unnecessary abstractions and overengineering.
 
 ---
 
-# Documentation Rules
+## Documentation
 
-Documentation must follow these standards:
+All documentation files must follow **GitHub Markdown conventions** and be placed in the **project root** unless instructed otherwise.
 
-- Documentation files must be written in **English**
-- Keep documentation clear and concise
-- Follow **GitHub README conventions**
-- Use Markdown best practices
+### Required files
 
-Documentation files must be placed **in the project root unless otherwise specified**.
+| File | Language | Description |
+|---|---|---|
+| `README.md` | English | Main project documentation |
+| `LEIAME.md` | Portuguese (pt-BR) | Portuguese translation of README |
+| `CONTRIBUTING.md` | English | Contribution guidelines |
+| `CONTRIBUINDO.md` | Portuguese (pt-BR) | Portuguese translation of CONTRIBUTING |
+
+Each file must link to its counterpart:
+
+```md
+📄 Portuguese version: see LEIAME.md   <!-- in README.md / CONTRIBUTING.md -->
+📄 English version: see README.md      <!-- in LEIAME.md / CONTRIBUINDO.md -->
+```
+
+### README structure
+
+1. Project title and description
+2. Relevant badges (language version, CI, license, coverage — no irrelevant badges)
+3. Features
+4. Installation
+5. Usage
+6. Configuration
+7. Contributing
+8. License (if applicable)
 
 ---
 
-# README.md Requirements
+## Markdown Signature
 
-The project must contain a `README.md` file in the **root directory**.
+Every `*.md` file created in this repository must end with this signature, **exactly once**:
 
-The README must follow **standard GitHub structure**:
-
-Recommended sections:
-
-- Project title
-- Description
-- Badges relevant to the project
-- Features
-- Installation
-- Usage
-- Configuration
-- Contributing
-- License (if applicable)
-
-Badges should be **relevant to the project**, for example:
-
-- language version
-- CI status
-- license
-- package version
-- code coverage
-
-Avoid adding irrelevant badges.
-
----
-
-# README Translation
-
-A Portuguese translation of the README must exist.
-
-Files:
-
-```
-
-README.md
-LEIAME.md
-
-```
-
-Rules:
-
-- `README.md` → English version
-- `LEIAME.md` → Brazilian Portuguese translation
-
-Both files must contain **a link to the counterpart language**.
-
-Example in `README.md`:
-
-```
-
-📄 Portuguese version: see LEIAME.md
-
-```
-
-Example in `LEIAME.md`:
-
-```
-
-📄 English version: see README.md
-
-```
-
-The translation should preserve:
-
-- section structure
-- headings
-- code examples
-
----
-
-# Contributing Documentation
-
-The project must include contribution guidelines.
-
-Files:
-
-```
-
-CONTRIBUTING.md
-CONTRIBUINDO.md
-
-```
-
-Rules:
-
-- `CONTRIBUTING.md` → English
-- `CONTRIBUINDO.md` → Brazilian Portuguese
-
-Both files must contain **a link to the other language version**.
-
-Example:
-
-In `CONTRIBUTING.md`:
-
-```
-
-📄 Portuguese version: see CONTRIBUINDO.md
-
-```
-
-In `CONTRIBUINDO.md`:
-
-```
-
-📄 English version: see CONTRIBUTING.md
-
-```
-
----
-
-# Markdown File Signature
-
-All Markdown files (`*.md`) created in this repository must end with the following signature:
-
-```
-
+```md
 ---
 
 Made with ❤️ and AI by [Kadu Velasco](https://github.com/kaduvelasco)
-
 ```
-
-This signature must appear **at the end of the file**.
-
-"Ensure the signature is only added once at the very end, even if the file is edited multiple times."
-
-Files affected include:
-
-- README.md
-- LEIAME.md
-- CONTRIBUTING.md
-- CONTRIBUINDO.md
-- documentation files
-- any other Markdown documentation
 
 ---
 
-# Security Practices
+## Security
 
 AI agents must never:
 
-- expose credentials
-- generate secrets
-- commit API keys
-- introduce insecure patterns
+- Expose credentials, secrets, or API keys.
+- Generate or hardcode sensitive information.
+- Introduce insecure patterns.
+
+If a task appears to require sensitive information, **ask the user instead of generating it**.
 
 ---
 
-# General Principles
+## General Principles
 
-AI agents working in this repository should:
-
-- respect the project structure
-- keep changes minimal
-- generate maintainable code
-- avoid unnecessary complexity
-- focus only on the requested task
-```
-
+- Implement **only what was requested** — avoid scope creep.
+- Keep solutions **simple and maintainable**.
+- Preserve the existing architecture.
+- When in doubt, **ask the user before proceeding**.

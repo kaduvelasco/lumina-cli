@@ -62,7 +62,7 @@ case "$cmd" in
 esac
 
 if [[ -f "$LIBEXEC_DIR/$cmd.sh" ]]; then
-    bash "$LIBEXEC_DIR/$cmd.sh" "$@"
+    exec "$LIBEXEC_DIR/$cmd.sh" "$@"
 else
     warn "Comando desconhecido: $cmd"
     show_help

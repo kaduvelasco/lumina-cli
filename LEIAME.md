@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![ShellCheck](https://img.shields.io/badge/ShellCheck-passing-brightgreen)
 
-📄 Versão em português: veja LEIAME.md
+📄 Versão em inglês: veja README.md
 
 CLI modular em Bash para gerenciamento do ecossistema Lumina — ambientes Docker, bancos de dados MariaDB e repositórios Git, integrados em um único ponto de controle.
 

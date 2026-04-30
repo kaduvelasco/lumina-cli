@@ -100,7 +100,7 @@ _create_gitignore() {
     info "Gerando .gitignore (Moodle/Web)..."
 
     if [[ -f "$TEMPLATES_DIR/.gitignore" ]]; then
-        cp "$TEMPLATES_DIR/.gitignore" .gitignore
+        cp -- "$TEMPLATES_DIR/.gitignore" .gitignore
     else
         warn "Template não encontrado. Gerando versão mínima."
         cat > .gitignore << 'EOF'
@@ -134,7 +134,7 @@ _update_gitignore() {
     info "Atualizando .gitignore..."
 
     if [[ -f "$TEMPLATES_DIR/.gitignore" ]]; then
-        cp "$TEMPLATES_DIR/.gitignore" .gitignore
+        cp -- "$TEMPLATES_DIR/.gitignore" .gitignore
         success ".gitignore atualizado com o template mais recente."
     else
         die "Template .gitignore não encontrado em: $TEMPLATES_DIR"
@@ -154,7 +154,7 @@ _create_aiexclude() {
     info "Gerando .aiexclude (Segurança e Performance IA)..."
 
     if [[ -f "$TEMPLATES_DIR/.aiexclude" ]]; then
-        cp "$TEMPLATES_DIR/.aiexclude" .aiexclude
+        cp -- "$TEMPLATES_DIR/.aiexclude" .aiexclude
     else
         warn "Template não encontrado. Gerando versão mínima."
         cat > .aiexclude << 'EOF'

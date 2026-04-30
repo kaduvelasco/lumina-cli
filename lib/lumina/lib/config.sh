@@ -4,8 +4,6 @@
 # Versão         : 2.0.0
 # =============================================================================
 
-set -euo pipefail
-
 readonly CONFIG_DIR="$HOME/.lumina"
 readonly CONFIG_FILE="$CONFIG_DIR/config.env"
 

@@ -60,7 +60,7 @@ _instalar_biblioteca() {
     local LIB_DEST="/usr/local/lib/lumina"
     info "Instalando bibliotecas em $LIB_DEST..."
     mkdir -p "$LIB_DEST"
-    cp -r "$SCRIPT_DIR/lib/lumina/"* "$LIB_DEST/"
+    cp -r "$SCRIPT_DIR/lib/lumina/." "$LIB_DEST/"
     chmod -R 755 "$LIB_DEST"
     success "Bibliotecas instaladas."
 }
@@ -110,14 +110,14 @@ _verificar_prerequisitos() {
     if [[ ! -f "$config_file" ]]; then
         warn "Configuração não encontrada: $config_file não existe."
         printf "   %b→ 'lumina stack' e 'lumina db' não funcionarão sem o lumina-stack.%b\n" "$C3" "$NC"
-        printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-stack%b\n' "$C6" "$NC"
+        printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-stack%b\n' "$C4" "$NC"
     else
         workspace=$(grep -m1 '^WORKSPACE=' "$config_file" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
         workspace="${workspace/#\~/$real_home}"
         if [[ ! -d "$workspace" ]]; then
             warn "lumina-stack não detectado: $workspace não existe."
             printf "   %b→ 'lumina stack' e 'lumina db' não funcionarão sem o lumina-stack.%b\n" "$C3" "$NC"
-            printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-stack%b\n' "$C6" "$NC"
+            printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-stack%b\n' "$C4" "$NC"
             workspace=""
         else
             success "lumina-stack detectado: $workspace encontrado."
@@ -134,7 +134,7 @@ _verificar_prerequisitos() {
     if ! command -v git >/dev/null 2>&1; then
         warn "git não encontrado."
         printf "   %b→ 'lumina git' não funcionará sem o lumina-dev.%b\n" "$C3" "$NC"
-        printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-dev%b\n' "$C6" "$NC"
+        printf '   %b  Instale em: https://github.com/kaduvelasco/lumina-dev%b\n' "$C4" "$NC"
     else
         success "git detectado: $(git --version)"
     fi
@@ -142,7 +142,7 @@ _verificar_prerequisitos() {
     # lumina-dev — libsecret (opcional, degradação silenciosa)
     if [[ ! -f "/usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret" ]]; then
         warn "libsecret não encontrado. Credenciais Git usarão modo 'cache' em vez de keyring."
-        printf '   %b  Instale o lumina-dev para habilitar o armazenamento seguro de credenciais.%b\n' "$C6" "$NC"
+        printf '   %b  Instale o lumina-dev para habilitar o armazenamento seguro de credenciais.%b\n' "$C4" "$NC"
     fi
 }
 

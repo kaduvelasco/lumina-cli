@@ -46,6 +46,7 @@ MODELOS DISPONÍVEIS:
   1. Linux Bash   — Diretrizes para scripts Bash/Shell
   2. MCP Server   — Diretrizes para Model Context Protocol
   3. PHP          — Diretrizes para desenvolvimento PHP
+  4. Moodle       — Diretrizes para desenvolvimento de plugins Moodle
 EOF
 }
 
@@ -102,8 +103,8 @@ _gravar_arquivos_ai() {
     done
 
     printf "\n"
-    [[ "$gravados" -gt 0 ]] && success "$gravados arquivo(s) gerado(s) em $(pwd)."
-    [[ "$ignorados" -gt 0 ]] && info "$ignorados arquivo(s) ignorado(s)."
+    [[ "$gravados" -gt 0 ]] && success "$gravados arquivo(s) gerado(s) em $(pwd)." || true
+    [[ "$ignorados" -gt 0 ]] && info "$ignorados arquivo(s) ignorado(s)." || true
 }
 
 _gerar_graphignore() {
@@ -121,6 +122,55 @@ _gerar_graphignore() {
     else
         info "$arquivo mantido sem alterações."
     fi
+}
+
+_ler_moodle_info() {
+    local mcp_file=".moodle-mcp"
+    local version_file="version.php"
+
+    MOODLE_PATH="" MOODLE_VERSION="" MOODLE_FULLVERSION=""
+
+    # 1. Tenta ler do .moodle-mcp
+    if [[ -f "$mcp_file" ]]; then
+        info "Lendo $mcp_file..."
+        MOODLE_PATH=$(grep '^MOODLE_PATH=' "$mcp_file" | cut -d'=' -f2- || true)
+        MOODLE_VERSION=$(grep '^MOODLE_VERSION=' "$mcp_file" | cut -d'=' -f2- || true)
+        MOODLE_FULLVERSION=$(grep '^MOODLE_FULLVERSION=' "$mcp_file" | cut -d'=' -f2- || true)
+    fi
+
+    # 2. Complementa com version.php
+    if [[ -z "$MOODLE_PATH" ]]; then
+        MOODLE_PATH="$(pwd)"
+    fi
+
+    if [[ -f "$version_file" ]]; then
+        if [[ -z "$MOODLE_VERSION" ]]; then
+            MOODLE_VERSION=$(grep '^\$release' "$version_file" \
+                | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+        fi
+        if [[ -z "$MOODLE_FULLVERSION" ]]; then
+            MOODLE_FULLVERSION=$(grep '^\$version' "$version_file" \
+                | grep -oE '[0-9]{8,}' | head -1 || true)
+        fi
+    fi
+
+    # 3. Solicita valores faltantes ao usuário
+    if [[ -z "$MOODLE_PATH" ]]; then
+        read -r -p "   Caminho do Moodle (MOODLE_PATH): " MOODLE_PATH
+    fi
+    if [[ -z "$MOODLE_VERSION" ]]; then
+        read -r -p "   Versão do Moodle (ex: 4.1.22): " MOODLE_VERSION
+    fi
+    if [[ -z "$MOODLE_FULLVERSION" ]]; then
+        read -r -p "   Versão completa do Moodle (ex: 2022112822): " MOODLE_FULLVERSION
+    fi
+
+    if [[ -z "$MOODLE_PATH" || -z "$MOODLE_VERSION" || -z "$MOODLE_FULLVERSION" ]]; then
+        die "Informações do Moodle incompletas. Verifique .moodle-mcp ou version.php."
+    fi
+
+    success "Moodle $MOODLE_VERSION detectado."
+    printf '   %b📁 Path: %b%s%b\n' "$C4" "$C3" "$MOODLE_PATH" "$NC"
 }
 
 _copiar_instructions() {
@@ -159,6 +209,22 @@ _copiar_instructions() {
                 success "instructions/php-references/ copiado."
             fi
             ;;
+        4)
+            local _p='{{MOODLE_PATH}}'
+            local _v='{{MOODLE_VERSION}}'
+            local _fv='{{MOODLE_FULLVERSION}}'
+            local moodle_tmpl
+            moodle_tmpl=$(_ler_template "instructions/MOODLE.md")
+            moodle_tmpl="${moodle_tmpl//$_p/$MOODLE_PATH}"
+            moodle_tmpl="${moodle_tmpl//$_v/$MOODLE_VERSION}"
+            moodle_tmpl="${moodle_tmpl//$_fv/$MOODLE_FULLVERSION}"
+            if _confirmar_sobrescrita "$dest_dir/MOODLE.md"; then
+                printf '%s\n' "$moodle_tmpl" > "$dest_dir/MOODLE.md"
+                success "instructions/MOODLE.md criado."
+            else
+                info "instructions/MOODLE.md mantido sem alterações."
+            fi
+            ;;
     esac
 }
 
@@ -176,13 +242,20 @@ criar_agents() {
     printf '   %b1.%b Linux Bash\n' "$C2" "$NC"
     printf '   %b2.%b MCP Server\n' "$C2" "$NC"
     printf '   %b3.%b PHP\n' "$C2" "$NC"
+    printf '   %b4.%b Moodle\n' "$C2" "$NC"
     printf '\n'
-    read -r -p "   Opção [1-3]: " modelo
+    local modelo
+    read -r -p "   Opção [1-4]: " modelo
 
     case "$modelo" in
         1) info "Modelo selecionado: Linux Bash" ;;
         2) info "Modelo selecionado: MCP Server" ;;
         3) info "Modelo selecionado: PHP" ;;
+        4)
+            info "Modelo selecionado: Moodle"
+            printf '\n'
+            _ler_moodle_info
+            ;;
         *) warn "Opção inválida."; return 1 ;;
     esac
 
@@ -191,6 +264,7 @@ criar_agents() {
     printf '   %b1.%b Sim\n' "$C2" "$NC"
     printf '   %b2.%b Não\n' "$C2" "$NC"
     printf '\n'
+    local use_graph
     read -r -p "   Opção [1-2]: " use_graph
 
     case "$use_graph" in
@@ -208,6 +282,7 @@ criar_agents() {
         1) conteudo_sufixo+='@instructions/BASH.md' ;;
         2) conteudo_sufixo+='@instructions/MCP.md' ;;
         3) conteudo_sufixo+='@instructions/PHP.md' ;;
+        4) conteudo_sufixo+='@instructions/MOODLE.md' ;;
     esac
 
     if [[ "$use_graph" == "1" ]]; then
@@ -222,7 +297,7 @@ criar_agents() {
     # --- Gravar arquivos ---
     _gravar_arquivos_ai "$conteudo_claude" "$conteudo_gemini" "$conteudo_padrao"
 
-    [[ "$use_graph" == "1" ]] && _gerar_graphignore
+    [[ "$use_graph" == "1" ]] && _gerar_graphignore || true
 
     # --- Copiar instruções ---
     _copiar_instructions "$modelo"

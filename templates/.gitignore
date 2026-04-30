@@ -119,6 +119,12 @@ aider.conf.yml
 # Tabnine
 .tabnine/
 
+# outros / mcps
+.code-review-graph/
+.kiro/
+.mcp.json
+.opencode.json
+
 
 # ------------------------------------------------------------------------------
 # Credenciais e segurança
