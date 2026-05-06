@@ -168,4 +168,3 @@ the subagent must signal that to the parent — not attempt to compensate.
 ## Language-Specific Standards
 
 @instructions/BASH.md
-
