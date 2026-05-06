@@ -107,21 +107,23 @@ _gravar_arquivos_ai() {
     [[ "$ignorados" -gt 0 ]] && info "$ignorados arquivo(s) ignorado(s)." || true
 }
 
-_gerar_graphignore() {
-    local arquivo=".code-review-graphignore"
-    local src="$TEMPLATES_DIR/code-review-graphignore"
-
+_gerar_ignore_files() {
+    local src="$TEMPLATES_DIR/.aiexclude"
     if [[ ! -f "$src" ]]; then
-        warn "Template não encontrado: $src"
-        return 1
+        warn "Template .aiexclude não encontrado. Arquivos de exclusão não gerados."
+        return 0
     fi
 
-    if _confirmar_sobrescrita "$arquivo"; then
-        cp -- "$src" "$arquivo"
-        success "$arquivo criado."
-    else
-        info "$arquivo mantido sem alterações."
-    fi
+    printf "\n"
+    local arquivo
+    for arquivo in .aiexclude .claudeignore .geminiignore; do
+        if _confirmar_sobrescrita "$arquivo"; then
+            cp -- "$src" "$arquivo"
+            success "$arquivo criado."
+        else
+            info "$arquivo mantido sem alterações."
+        fi
+    done
 }
 
 _ler_moodle_info() {
@@ -259,20 +261,6 @@ criar_agents() {
         *) warn "Opção inválida."; return 1 ;;
     esac
 
-    # --- Pergunta 2: Code Review Graph ---
-    printf '\n%bDeseja incluir instruções do Code Review Graph?%b\n\n' "$C4" "$NC"
-    printf '   %b1.%b Sim\n' "$C2" "$NC"
-    printf '   %b2.%b Não\n' "$C2" "$NC"
-    printf '\n'
-    local use_graph
-    read -r -p "   Opção [1-2]: " use_graph
-
-    case "$use_graph" in
-        1) info "Code Review Graph: incluído" ;;
-        2) info "Code Review Graph: não incluído" ;;
-        *) warn "Opção inválida."; return 1 ;;
-    esac
-
     # --- Montar conteúdo ---
     local conteudo_base conteudo_sufixo
     conteudo_base=$(_ler_template "BASIC.md")
@@ -285,10 +273,6 @@ criar_agents() {
         4) conteudo_sufixo+='@instructions/MOODLE.md' ;;
     esac
 
-    if [[ "$use_graph" == "1" ]]; then
-        conteudo_sufixo+=$'\n\n'"$(_ler_template "CODE-REVIEW-GRAPH.md")"
-    fi
-
     local conteudo_claude conteudo_gemini conteudo_padrao
     conteudo_claude="${conteudo_base}"$'\n\n'"$(_ler_template "ONLY-CLAUDE.md")${conteudo_sufixo}"
     conteudo_gemini="${conteudo_base}"$'\n\n'"$(_ler_template "ONLY-GEMINI.md")${conteudo_sufixo}"
@@ -297,10 +281,11 @@ criar_agents() {
     # --- Gravar arquivos ---
     _gravar_arquivos_ai "$conteudo_claude" "$conteudo_gemini" "$conteudo_padrao"
 
-    [[ "$use_graph" == "1" ]] && _gerar_graphignore || true
-
     # --- Copiar instruções ---
     _copiar_instructions "$modelo"
+
+    # --- Gerar arquivos de exclusão ---
+    _gerar_ignore_files
 }
 
 # ==============================================================================

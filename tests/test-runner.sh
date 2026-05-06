@@ -112,8 +112,6 @@ test_templates() {
     assert_file_exists "template BASIC.md existe"                    "$TMPL/BASIC.md"
     assert_file_exists "template ONLY-CLAUDE.md existe"              "$TMPL/ONLY-CLAUDE.md"
     assert_file_exists "template ONLY-GEMINI.md existe"              "$TMPL/ONLY-GEMINI.md"
-    assert_file_exists "template CODE-REVIEW-GRAPH.md existe"        "$TMPL/CODE-REVIEW-GRAPH.md"
-    assert_file_exists "template code-review-graphignore existe"     "$TMPL/code-review-graphignore"
     assert_file_exists "template instructions/BASH.md existe"        "$TMPL/instructions/BASH.md"
     assert_file_exists "template instructions/MCP.md existe"         "$TMPL/instructions/MCP.md"
     assert_file_exists "template instructions/PHP.md existe"         "$TMPL/instructions/PHP.md"
@@ -123,6 +121,27 @@ test_subcomando_ai() {
     printf '\n%b[ai.sh] Execução do subcomando%b\n' "$C4" "$NC"
     local LUMINA="$ROOT_DIR/bin/lumina"
     assert_equals "lumina ai --help retorna 0" "0" "$($LUMINA ai --help >/dev/null 2>&1; echo $?)"
+}
+
+test_ai_agents_gera_arquivos() {
+    printf '\n%b[ai.sh] lumina ai agents — arquivos gerados%b\n' "$C4" "$NC"
+    local LUMINA="$ROOT_DIR/bin/lumina"
+    local tmpdir
+    tmpdir=$(mktemp -d)
+
+    (cd "$tmpdir" && printf '1\n' | "$LUMINA" ai agents >/dev/null 2>&1) || true
+
+    assert_file_exists "ai agents gera CLAUDE.md"            "$tmpdir/CLAUDE.md"
+    assert_file_exists "ai agents gera GEMINI.md"            "$tmpdir/GEMINI.md"
+    assert_file_exists "ai agents gera AGENTS.md"            "$tmpdir/AGENTS.md"
+    assert_file_exists "ai agents gera .windsurfrules"        "$tmpdir/.windsurfrules"
+    assert_file_exists "ai agents gera .cursorrules"          "$tmpdir/.cursorrules"
+    assert_file_exists "ai agents gera .aiexclude"            "$tmpdir/.aiexclude"
+    assert_file_exists "ai agents gera .claudeignore"         "$tmpdir/.claudeignore"
+    assert_file_exists "ai agents gera .geminiignore"         "$tmpdir/.geminiignore"
+    assert_file_exists "ai agents gera instructions/BASH.md"  "$tmpdir/instructions/BASH.md"
+
+    rm -rf -- "$tmpdir"
 }
 
 test_binario() {
@@ -161,6 +180,7 @@ main() {
     test_arquivos_libexec
     test_templates
     test_subcomando_ai
+    test_ai_agents_gera_arquivos
     test_binario
     test_dependencias
     test_config_carregamento

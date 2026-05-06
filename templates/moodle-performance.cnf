@@ -1,9 +1,0 @@
-[mariadb]
-max_allowed_packet = 64M
-innodb_buffer_pool_size = BUFFER_POOL_MB_PLACEHOLDER
-innodb_log_file_size = 256M
-innodb_file_per_table = 1
-innodb_flush_log_at_trx_commit = 2
-binlog_format = ROW
-character-set-server = utf8mb4
-collation-server = utf8mb4_unicode_ci

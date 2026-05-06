@@ -125,7 +125,7 @@ lumina git                    Abre o menu interativo
 lumina git configure-global   Configura nome, e-mail e credential helper global
 lumina git init               git init -b main e aplica configurações locais
 lumina git clone              Clona repositório e aplica configurações locais
-lumina git apply-local        Aplica identidade local + gera .gitignore e .aiexclude
+lumina git apply-local        Aplica identidade local + gera .gitignore, .aiexclude, .claudeignore e .geminiignore
 lumina git --help             Exibe esta ajuda
 ```
 
@@ -133,7 +133,7 @@ lumina git --help             Exibe esta ajuda
 - Identidade local (nome e e-mail independentes da configuração global)
 - Credential helper: usa `git-credential-libsecret` se disponível, senão `cache`
 - `.gitignore` a partir do template Moodle/PHP incluído
-- `.aiexclude` para proteção de dados sensíveis em ferramentas de IA
+- `.aiexclude`, `.claudeignore` e `.geminiignore` para proteção de dados sensíveis em ferramentas de IA
 
 O credential helper é detectado automaticamente em múltiplos caminhos conhecidos
 (Debian/Ubuntu, Fedora, Arch), com fallback para `cache`.
@@ -150,9 +150,9 @@ lumina ai agents       Gera arquivos de contexto no diretório atual
 lumina ai --help       Exibe esta ajuda
 ```
 
-**`lumina ai agents`** conduz duas perguntas e então gera os arquivos:
+**`lumina ai agents`** conduz uma pergunta e então gera os arquivos:
 
-**1. Qual modelo você deseja usar?**
+**Qual modelo você deseja usar?**
 
 | Opção | Instrução adicionada |
 |-------|----------------------|
@@ -170,10 +170,6 @@ Para o modelo **Moodle**, o script detecta automaticamente as informações do p
 
 O arquivo `instructions/MOODLE.md` é gerado com os placeholders `{{MOODLE_PATH}}`, `{{MOODLE_VERSION}}` e `{{MOODLE_FULLVERSION}}` substituídos pelos valores reais do projeto.
 
-**2. Deseja incluir instruções do Code Review Graph?**
-
-Se `Sim`, acrescenta ao contexto as instruções de uso das ferramentas MCP `code-review-graph` e gera o arquivo `.code-review-graphignore` com padrões de exclusão para dependências, arquivos gerados, build artifacts e IDE files.
-
 **Arquivos gerados no diretório atual:**
 
 | Arquivo | Conteúdo |
@@ -183,7 +179,9 @@ Se `Sim`, acrescenta ao contexto as instruções de uso das ferramentas MCP `cod
 | `AGENTS.md` | Base + Language-Specific Standards |
 | `.windsurfrules` | Idêntico ao AGENTS.md |
 | `.cursorrules` | Idêntico ao AGENTS.md |
-| `.code-review-graphignore` | Apenas quando Code Review Graph = Sim |
+| `.aiexclude` | Exclusões para ferramentas de IA genéricas |
+| `.claudeignore` | Exclusões para Claude |
+| `.geminiignore` | Exclusões para Gemini |
 
 Além dos arquivos acima, é criada a pasta `instructions/` com o arquivo de padrões da linguagem selecionada:
 
@@ -239,8 +237,6 @@ lumina-cli/
 │       ├── BASIC.md                  # Base comum para todos os agentes
 │       ├── ONLY-CLAUDE.md            # Bloco exclusivo para CLAUDE.md
 │       ├── ONLY-GEMINI.md            # Bloco exclusivo para GEMINI.md
-│       ├── CODE-REVIEW-GRAPH.md      # Instruções MCP code-review-graph
-│       ├── code-review-graphignore   # Padrões de exclusão do grafo
 │       ├── .gitignore                # Template Moodle/PHP
 │       ├── .aiexclude                # Exclusões para ferramentas de IA
 │       ├── moodle-performance.cnf    # Template de tuning MariaDB
@@ -251,7 +247,7 @@ lumina-cli/
 │           ├── MOODLE.md             # Padrões Moodle Plugin Dev
 │           └── php-references/       # Referências PSR
 └── tests/
-    └── test-runner.sh                # Suíte de testes (30 casos)
+    └── test-runner.sh                # Suíte de testes (45 casos)
 ```
 
 O dispatcher `bin/lumina` detecta automaticamente qualquer arquivo `.sh` em
@@ -287,7 +283,7 @@ funções de output e carregamento de configuração. Não requer Docker ou Mari
 execução.
 
 ```
-Resultado: 38 aprovados  0 falhos
+Resultado: 45 aprovados  0 falhos
 ```
 
 ---
@@ -301,7 +297,7 @@ O essencial:
 
 1. Crie `lib/lumina/libexec/<comando>.sh` seguindo o template do guia
 2. Rode `shellcheck -x lib/lumina/libexec/<comando>.sh` — deve passar sem warnings
-3. Rode `bash tests/test-runner.sh` — todos os 38 testes devem continuar passando
+3. Rode `bash tests/test-runner.sh` — todos os 45 testes devem continuar passando
 4. O novo comando já estará disponível como `lumina <comando>`
 
 ---

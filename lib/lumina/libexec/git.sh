@@ -141,23 +141,33 @@ _update_gitignore() {
     fi
 }
 
-_create_aiexclude() {
-    if [[ -f ".aiexclude" ]]; then
-        warn ".aiexclude já existe neste diretório."
+_gravar_arquivo_ignore() {
+    local arquivo="$1"
+    local src="$2"
+
+    if [[ -f "$arquivo" ]]; then
+        warn "$arquivo já existe neste diretório."
         read -r -p "   Deseja sobrescrever? [s/N]: " confirm
         if [[ ! "$confirm" =~ ^[sS]$ ]]; then
-            info ".aiexclude mantido sem alterações."
+            info "$arquivo mantido sem alterações."
             return 0
         fi
     fi
 
-    info "Gerando .aiexclude (Segurança e Performance IA)..."
+    cp -- "$src" "$arquivo"
+    success "$arquivo criado."
+}
 
-    if [[ -f "$TEMPLATES_DIR/.aiexclude" ]]; then
-        cp -- "$TEMPLATES_DIR/.aiexclude" .aiexclude
-    else
+_create_aiexclude() {
+    info "Gerando arquivos de exclusão de IA (.aiexclude, .claudeignore, .geminiignore)..."
+
+    local src="$TEMPLATES_DIR/.aiexclude"
+    if [[ ! -f "$src" ]]; then
         warn "Template não encontrado. Gerando versão mínima."
-        cat > .aiexclude << 'EOF'
+        local _tmpfile
+        _tmpfile=$(mktemp)
+        trap 'rm -f -- "$_tmpfile"' RETURN
+        cat > "$_tmpfile" << 'EOF'
 .env
 .env.*
 *.pem
@@ -172,9 +182,12 @@ _create_aiexclude() {
 *.png
 *.gif
 EOF
+        src="$_tmpfile"
     fi
 
-    success ".aiexclude criado com bloqueio de segurança e mídia."
+    _gravar_arquivo_ignore ".aiexclude"    "$src"
+    _gravar_arquivo_ignore ".claudeignore" "$src"
+    _gravar_arquivo_ignore ".geminiignore" "$src"
 }
 
 # ==============================================================================
